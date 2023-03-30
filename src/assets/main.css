@@ -17,3 +17,46 @@ canvas {
 }
 
 
+#overlay {
+  color: white;
+  font-family:monospace ;
+}
+
+#overlay.overview {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+#overlay.detailView {
+  font-size: 0.8em;
+  font-weight: normal;
+}
+
+#overlay.overview .earth-text {
+  display: none;
+}
+
+.earth-label {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.earth-text {
+  background-color: rgba(106, 106, 106, 0.5) ;
+  font-size: 1.5em;
+  font-weight: normal;  
+}
+
+#overlay.detailView .earth-label {
+  display: none;
+}
+
+#overlay.detailView .earth-text {
+  display: block;
+  float: right;
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+}
