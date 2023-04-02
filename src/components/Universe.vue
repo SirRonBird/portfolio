@@ -13,6 +13,8 @@ import {
 } from '../utils/threeUtils';
 import {setupCSS2DRenderer} from "../ts/DetailCamera";
 import {InteractionManager} from "three.interactive";
+import Stats from "stats.js";
+
 
 
 import universeTexture from '../textures/stars_milky_way.jpg';
@@ -145,7 +147,9 @@ const solarSystem = new SolarSystem(scene, planetarray);
 //setup cameras
 const mainCamera = setupMainCamera(scene);
 const earthCamera = setupEarthCamera(scene, earth);
-earthCamera.show();
+
+//show cameras for debug
+//earthCamera.show();
 
 let container: HTMLCanvasElement;
 let overlay: HTMLDivElement;
@@ -154,13 +158,18 @@ let renderer: THREE.WebGLRenderer;
 let interactionManager: InteractionManager;
 let css2dRenderer: CSS2DRenderer;
 
-
+const stats = new Stats();
 
 onMounted(() => {
     container = document.getElementById("canvas") as HTMLCanvasElement;
     overlay = document.getElementById("overlay") as HTMLDivElement;
     css2dRenderer = setupCSS2DRenderer(overlay);
     renderer = setUpRenderer(scene, mainCamera, container);
+
+
+    stats.dom.style.position = 'absolute';
+    stats.showPanel(0);
+    document.body.appendChild(stats.dom);
 
     interactionManager = new InteractionManager(
         renderer,
@@ -189,7 +198,7 @@ function animate() {
 
             interactionManager.camera = earthCamera.camera;
             interactionManager.update();
-
+            stats.update();
             earth.update(time);
             moon.update(time);
             break;
@@ -206,6 +215,7 @@ function animate() {
             solarSystem.planets.map((planet) => {
                 planet.update(time);
             });
+            stats.update();
             break;
     }
 }

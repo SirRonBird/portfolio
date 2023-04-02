@@ -32,7 +32,7 @@ export class SolarSystem {
         moonOrbit.position.copy(planets[1].position);
         moonOrbit.add(planets[2].getMesh());
         planets[2].setOrbitObject(moonOrbit);
-        solarSystem.add(moonOrbit);
+        earthOrbit.add(moonOrbit);
 
         scene.add(solarSystem);
     }
