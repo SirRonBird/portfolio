@@ -23,22 +23,22 @@ uniform mat3 normalMatrix;
 uniform vec3 cameraPosition;
 
 uniform sampler2D u_texture;
+uniform sampler2D u_nightTexture;
 uniform sampler2D u_normalMap;
+uniform sampler2D u_specularMap;
+uniform vec3 u_lightPosition;
 
 in vec3 position;
 in vec2 vUv;
 in vec3 vPosition;
+in vec3 vNormal;
 //in vec3 vReflect;
 
-
-vec3 lightPosition = vec3(10.0, 0.0, 8.0);
-float lightMagnitude = 50.0;
-float ambientReflectance = 0.8;
-float diffuseReflectance = 0.2;
-float specularReflectance = 0.2;
-vec3 specularLight = vec3(1.0, 1.0, 1.0);
-
-
+float lightMagnitude = 1.0;
+float ambientReflectance = 0.2;
+float diffuseReflectance = 1.5;
+float specularReflectance = 0.8;
+vec3 specularLight = vec3(.5, .5, .5);
 
 out vec4 fragColor;
 
@@ -56,24 +56,27 @@ vec3 calcNormal(){
     return worldNormal;
 }
 
+void main() {
+    vec3 n = normalize(vNormal);
 
-void main()
-{
-    vec3 n = calcNormal();
-
-    vec3 l = normalize(lightPosition - vPosition);
+    vec3 l = normalize(u_lightPosition - vPosition);
 
     vec3 r = reflect(-l, n);
-    vec3 v = normalize(-vPosition);
+    vec3 v = normalize(cameraPosition - vPosition);
 
-    float diffuse = max(dot(n, l), 0.0);
-    float specular = pow(max(dot(r, v), 0.0), dot(specularLight, vec3(1.0, 1.0, 1.0))) * lightMagnitude;
-    
-    vec3 ambient = texture(u_texture, vUv).rgb * ambientReflectance;
+    float lambertian = max(dot(n, l), 0.0);
+    float specular = pow(max(dot(r,v), 0.0), 32.0) * lightMagnitude;
 
-    vec3 diffuseColor = texture(u_texture, vUv).rgb * diffuse * diffuseReflectance;
-    vec3 specularColor = specularLight * specular * specularReflectance;
+    float facing = dot(normalize(vNormal), l);
+    float diffuseColor =  lambertian * diffuseReflectance;
 
-    vec3 color = ambient + diffuseColor * specularColor;
+    vec3 specularColor = specularLight * specularReflectance * specular;
+
+
+    float atmosphere = max(dot(normalize(vNormal), l), 0.0);
+    vec3 atmosphereColor = vec3(0.3,0.6,1.0)*pow(atmosphere, 1.5)*0.3;
+
+
+    vec3 color = texture(u_texture,vUv).rgb * (diffuseColor  + ambientReflectance + atmosphereColor) /* + specularColor * texture(u_specularMap, vUv).rgb */;
     fragColor = vec4(color, 1.0);
 }

@@ -12,12 +12,14 @@
     "three-css2drender": "^1.0.0",
     "three.interactive": "^1.6.1",
     "tif": "^0.1.5",
-    "update": "^0.7.4",
+    "typescript": "^5.0.3",
+    "update": "^0.4.2",
     "vite-plugin-glsl": "^1.1.2",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
+    "@types/three": "^0.150.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "vite": "^4.1.4",
     "vite-plugin-string": "^1.2.1"

@@ -25,26 +25,27 @@ uniform vec3 cameraPosition;
 
 
 uniform sampler2D u_normalMap;
-
+uniform vec3 u_viewPos;
+uniform float u_c;
+uniform float u_p;
 // default vertex attributes provided by Geometry and BufferGeometry
 in vec3 position;
 in vec3 normal;
 in vec2 uv;
 
-out vec2 vUv;
-out vec3 vPosition;
-out vec3 vNormal;
+out float vIntensity;
 //out vec3 vReflect;
 
 
 // main function gets executed for every vertex
 void main()
 {
-    // set the varying variables
-    vUv = uv;
-    vPosition = vec3(modelMatrix * vec4(position, 1.0));
-    vNormal = mat3(transpose(inverse(modelMatrix))) * normal;
-    //vReflect = reflect(normalize(position), normal);
+    
+    vec3 vNormal = normalize(normalMatrix * normal);
+    vec3 vNormel = normalize(normalMatrix * normalize(u_viewPos));
+ 
+    vIntensity = pow(u_c - dot(vNormal, vNormel), u_p);
+
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 
 }

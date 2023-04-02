@@ -128,6 +128,7 @@ float snoise(vec4 v) {
 
 uniform float u_time;
 
+in float vIntensity;
 in vec3 vPosition;
 
 out vec4 fragColor;
@@ -162,9 +163,9 @@ vec3 hsv2rgb(vec3 c)
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-
-
+// main function gets executed for every pixel
 void main() {
+    
 
     //color based on noise
     vec4 p = vec4(vPosition * 0.3, u_time * 0.05);
@@ -180,18 +181,11 @@ void main() {
     vec3 hsv = rgb2hsv(baseColor);
 
     //change the value based on the noise value
-    hsv.z *= mix(0.5, .7, ln);
+    hsv.z *= mix(0.5, .7, n);
 
     //convert the color back to RGB
     vec3 color = hsv2rgb(hsv);
 
-    
-
-
-    //fragColor = vec4(r+n, g+n, b+n, 1.);
-    //fragColor = vec4(x, y, z, 1.);
-    //fragColor = vec4(n, n, n, 1.);
-    fragColor = vec4(color, 1.);
-    //fragColor = vec4(ln, ln, ln, 1.);
-
+    vec3 glow = vec3(1.0 , 0.2, 0.0) * vIntensity;
+    fragColor = vec4( glow,1. );
 }

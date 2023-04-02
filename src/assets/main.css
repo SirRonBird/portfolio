@@ -44,19 +44,62 @@ canvas {
 .earth-text {
   background-color: rgba(106, 106, 106, 0.5) ;
   font-size: 1.5em;
-  font-weight: normal;  
+  font-weight: normal; 
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+  grid-column: 3;
+}
+
+.earth-title{
+  background-color: rgba(106, 106, 106, 0.5) ;
+  font-size: 1.5em;
+  font-weight: bold; 
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+  grid-column: 3
 }
 
 #overlay.detailView .earth-label {
   display: none;
 }
 
-#overlay.detailView .earth-text {
-  display: block;
-  float: right;
-  width: 300px;
-  padding: 20px;
+#overlay.overview .details{
+  display: none;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.earth-facts {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-column: 3;
+  background-color: rgba(106, 106, 106, 0.5) ;
+  font-size: 1.5em;
+  font-weight: normal; 
+  padding: 10px;
+  margin-bottom: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
   clear: both;
+}
+
+.earth-photo {
+  grid-column: 2;
+}
+
+.earth-photo img {
+  width: 100%;
+  height: 100%;
+}
+
+.earth-facts-text {
+  grid-column: 1;
 }

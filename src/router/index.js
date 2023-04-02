@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Universe from '../components/Universe.vue'
+import Universe from '../components/Universe_old.vue'
+import Universe02 from "@/components/Universe.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,8 +8,9 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Universe
+      component: Universe02
     },
+
   ]
 })
 

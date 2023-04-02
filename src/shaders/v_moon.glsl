@@ -33,6 +33,7 @@ in vec2 uv;
 
 out vec2 vUv;
 out vec3 vPosition;
+out vec3 vNormal;
 //out vec3 vReflect;
 
 
@@ -41,7 +42,8 @@ void main()
 {
     // set the varying variables
     vUv = uv;
-    vPosition = position;
+    vPosition = vec3(modelMatrix * vec4(position, 1.0));
+    vNormal = mat3(transpose(inverse(modelMatrix))) * normal;
     //vReflect = reflect(normalize(position), normal);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 
