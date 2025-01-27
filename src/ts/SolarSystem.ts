@@ -34,6 +34,12 @@ export class SolarSystem {
         planets[2].setOrbitObject(moonOrbit);
         earthOrbit.add(moonOrbit);
 
+        const gamePlanetOrbit = new THREE.Object3D();
+        gamePlanetOrbit.name = "gamePlanetOrbit";
+        gamePlanetOrbit.add(planets[3].getMesh());
+        planets[3].setOrbitObject(gamePlanetOrbit);
+        solarSystem.add(gamePlanetOrbit);
+
         scene.add(solarSystem);
     }
 

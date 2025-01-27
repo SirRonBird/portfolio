@@ -2,6 +2,7 @@ import * as THREE from "three";
 import {Atmosphere} from "./Atmosphere";
 import {SolarSystem} from "./SolarSystem";
 
+
 //class for the planets
 export class Planet {
     name: string;
@@ -118,14 +119,16 @@ export class Planet {
     }
 
     addEventListeners() {
+        if(this.name === "earth"){
+
         this.mesh.addEventListener("click", () => {
-            //console.log(this.name);
+            console.log(this.name);
             if (this.solarSystem && this.solarSystem.getCurrentPlanet() !== this.name) {
                 this.solarSystem.setCurrentPlanet(this.name);
             } else if (this.solarSystem && this.solarSystem.getCurrentPlanet() === this.name) {
                 this.solarSystem.setCurrentPlanet(null);
             }
-        });
+        });}
 
         this.mesh.addEventListener("mouseover", () => {
             //TODO: add hover effect glow
