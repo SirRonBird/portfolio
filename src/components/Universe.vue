@@ -14,7 +14,7 @@ import {
 import {setupCSS2DRenderer} from "../ts/DetailCamera";
 import {InteractionManager} from "three.interactive";
 import Stats from "stats.js";
-
+import App from './App.vue'
 
 
 import universeTexture from '../textures/stars_milky_way.jpg';
@@ -25,6 +25,8 @@ import earthSpecularMap from '../textures/earth_specular_map.jpg';
 
 import moonTexture from '../textures/moon_map.jpg';
 
+import gamePlanetTexture from '../textures/gameplanet_map.jpg';
+
 // shaders import
 import earth_v_shader from "../shaders/v_earth.glsl?raw";
 import earth_f_shader from "../shaders/f_earth.glsl?raw";
@@ -32,15 +34,20 @@ import earth_f_shader from "../shaders/f_earth.glsl?raw";
 import moon_v_shader from "../shaders/v_moon.glsl?raw";
 import moon_f_shader from "../shaders/f_moon.glsl?raw";
 
+import gamePlanet_v_shader from "../shaders/v_gamePlanet.glsl?raw";
+import gamePlanet_f_shader from "../shaders/f_gamePlanet.glsl?raw";
+
 import sun_v_shader from "../shaders/v_sun.glsl?raw";
 import sun_f_shader from "../shaders/f_sun.glsl?raw";
 import {SolarSystem} from "../ts/SolarSystem";
+import { useRoute, useRouter } from 'vue-router'
 
+
+const router = useRouter();
 
 //set some variables
 let time = 0;
 let planetToFollow = null;
-
 
 //sun
 const sunRadius = 10;
@@ -84,9 +91,21 @@ const moonPosition = new THREE.Vector3(moonOrbit, 0, 0);
 let moonUniforms: { [uniforms: string]: THREE.IUniform };
 moonUniforms = {
     u_texture: {value: new THREE.TextureLoader().load(moonTexture)},
-    u_lightPosition: {value: new THREE.Vector3(0, 0, 0)},
+    u_lightPosition: {value: sunPosition},
 };
 
+//game planet
+const gamePlanetRadius = 5.212;
+const gamePlanetOrbit = 74;
+const gamePlanetOrbitSpeed = 0.00005;
+const gamePlanetRotationSpeed = 0.005;
+const gamePlanetTilt = new THREE.Vector3(12,0,1);
+const gamePlanetPosition = new THREE.Vector3(gamePlanetOrbit, 0, 0 );
+let gamePlanetUniforms: { [uniforms: string]: THREE.IUniform};
+gamePlanetUniforms = {
+    u_texture: {value: new THREE.TextureLoader().load(gamePlanetTexture)},
+    u_lightPosition: {value: sunPosition}
+}
 
 //setup Scene with background texture
 const scene = setupScene(
@@ -140,7 +159,22 @@ const moon = new Planet(
     earth
 );
 
-planetarray = [sun, earth, moon];
+const game_planet = new Planet(
+    'game',
+    gamePlanetRadius,
+    gamePlanetOrbit,
+    gamePlanetPosition,
+    gamePlanetTilt,
+    gamePlanetRotationSpeed,
+    gamePlanetOrbitSpeed,
+    gamePlanet_v_shader,
+    gamePlanet_f_shader,
+    gamePlanetUniforms,
+    null,
+    sun
+)
+
+planetarray = [sun, earth, moon, game_planet];
 const solarSystem = new SolarSystem(scene, planetarray);
 
 
@@ -154,22 +188,26 @@ const earthCamera = setupEarthCamera(scene, earth);
 let container: HTMLCanvasElement;
 let overlay: HTMLDivElement;
 
+let app: App;
+
 let renderer: THREE.WebGLRenderer;
 let interactionManager: InteractionManager;
 let css2dRenderer: CSS2DRenderer;
 
+
 const stats = new Stats();
 
 onMounted(() => {
+    
     container = document.getElementById("canvas") as HTMLCanvasElement;
     overlay = document.getElementById("overlay") as HTMLDivElement;
     css2dRenderer = setupCSS2DRenderer(overlay);
     renderer = setUpRenderer(scene, mainCamera, container);
 
 
-    stats.dom.style.position = 'absolute';
+    /* stats.dom.style.position = 'absolute';
     stats.showPanel(0);
-    document.body.appendChild(stats.dom);
+    document.body.appendChild(stats.dom); */
 
     interactionManager = new InteractionManager(
         renderer,
@@ -177,8 +215,19 @@ onMounted(() => {
         renderer.domElement
     );
 
-    solarSystem.planets.forEach((planet) => {
+
+
+    solarSystem.planets.forEach((planet) => 
+    {
+
         interactionManager.add(planet.mesh);
+
+        if(planet.name === "game"){
+            planet.mesh.addEventListener('click', () => {
+                // Wechsel zur /game Route
+                router.push('/game');
+            });
+        }
     });
 
 
@@ -189,6 +238,7 @@ onMounted(() => {
 
 function animate() {
     time += 0.01;
+    
     switch (solarSystem.currentPlanet) {
         case planets.earth:
             requestAnimationFrame(animate);
@@ -202,6 +252,7 @@ function animate() {
             earth.update(time);
             moon.update(time);
             break;
+        
         default:
             requestAnimationFrame(animate);
             overlay.className = "overlay";
